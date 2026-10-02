@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "absence-gate"
+version = "0.1.0"
+description = "A weekly check-then-chase job where a page that didn't load is never read as a document that isn't there"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Joseph Bisaccia"}]
+requires-python = ">=3.10"
+keywords = ["gate", "ci", "automation", "idempotency", "llm-extraction", "grounding", "browser-automation"]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.urls]
+Homepage = "https://getaiintegrations.com/projects"
+Repository = "https://github.com/jbisaccia-9/absence-gate"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "tests"]
+testpaths = ["tests"]
