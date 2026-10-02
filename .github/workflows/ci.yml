@@ -1,0 +1,20 @@
+name: ci
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+      # Nine weeks, every run live, graded, then sent. Includes a portal outage and a failure streak.
+      - run: python -m absencegate season data --out out/season
+      - run: python -m absencegate check-dir out/season
+      # A dry run is the default and its outbox can never be sent.
+      - run: python -m absencegate seed dry && python -m absencegate run dry --week 1 --out out/dry
+      - run: "! python -m absencegate send out/dry"
+      # The refusal is the assertion: every counterexample MUST fail, each for its own rule.
+      - run: python -m absencegate counterexamples out/cx --data out/cx-data
+      - run: "! python -m absencegate check-dir out/cx --send"
